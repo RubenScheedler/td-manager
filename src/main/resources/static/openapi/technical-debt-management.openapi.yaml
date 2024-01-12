@@ -1,0 +1,63 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Technical Debt Management
+  description: An API for managing technical debt items
+servers:
+  - url: http://localhost:8080
+paths:
+  /td-items:
+    get:
+      description: |
+        Returns all technical debt items.
+      operationId: tdItems
+      responses:
+        '200':
+          description: TD item response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TDItemDTO'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    TDItemDTO:
+      allOf:
+        - $ref: '#/components/schemas/NewTDItemDTO'
+        - type: object
+          required:
+            - id
+          properties:
+            id:
+              type: string
+              format: uuid
+
+    NewTDItemDTO:
+      type: object
+      required:
+        - title
+        - description
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
